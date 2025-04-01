@@ -1,0 +1,75 @@
+{% include "header.html" %}
+{% from "bootstrap5/form.html" import render_form %}
+
+<!-- Page Header-->
+<header class="masthead" style="background-image: url('{{post.img_url}}')">
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="post-heading">
+          <h1>{{ post.title }}</h1>
+          <h2 class="subheading">{{ post.subtitle }}</h2>
+          <span class="meta"
+            >Posted by
+            <!-- since the author is now an object of User class, it has the attr of name -->
+            <a href="#">{{ post.author.name }}</a>
+            on {{ post.date }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Post Content -->
+<article>
+  <div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        {{ post.body|safe }}
+        <!--TODO: Only show Edit Post button if user id is 1 (admin user) -->
+        {% if current_user.id == 1 %}
+        <div class="d-flex justify-content-end mb-4">
+          <a
+            class="btn btn-primary float-right"
+            href="{{url_for('edit_post', post_id=post.id)}}"
+            >Edit Post</a
+          >
+        </div>
+        {% endif %}
+
+        <!-- Comments Area -->
+        <!-- TODO: Add a CKEditor for commenting below -->
+        {{ ckeditor.load() }}
+        {{ ckeditor.config(name='comment') }}
+        {{ render_form(form) }}
+        <div class="comment">
+          <!-- TODO: Show all the comments on a post -->
+          <ul class="commentList">
+            {% for comment in post.comment %}
+            <li>
+              <div class="commenterImage">
+                <img src="{{ 'zzz.sochi@gmail.com' | gravatar }}" />
+              </div>
+              <div class="commentText">
+                <!-- |safe ensures that the text is clean and is in UTF-8 format -->
+                <p>{{comment.text | safe}}</p>
+
+                <!-- how does the line below work?
+                explanation: comment goes through the list of comments which is a property of BlogPost.
+                but we know that commenter is the property of Comment table but because they are related with "parent_post" property,
+                 we can access the properties of Comment table. so we go with comment.commenter.
+                 then, commenter is also related to users by "comments" property. so we can access so basically comment.commenter is a Users property now.
+                 so, it'll have the "name" property or attr.-->
+                <span class="date sub-text">{{comment.commenter.name}}</span>
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+{% include "footer.html" %}
