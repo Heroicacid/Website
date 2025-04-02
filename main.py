@@ -273,7 +273,7 @@ def contact():
             connection.sendmail(
             from_addr= MAIL, 
             to_addrs= MAIL, 
-            msg= f"Subject: New Message!\n\nName: {request.form['name']}\nPhone: {request.form["phone"]}\nMessage:\n{request.form["message"]}"
+            msg= f"Subject: New Message!\n\nName: {request.form['name']}\nPhone: {request.form['phone']}\nMessage:\n{request.form['message']}"
             )
             return render_template("contact.html", msg_sent = True)
     return render_template("contact.html", msg_sent = False)
