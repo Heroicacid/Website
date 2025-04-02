@@ -2,3 +2,4 @@ instance
 .venv
 .idea
 .DS_Store
+.env
